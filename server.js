@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 5176;
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
+// API routes must come before the catch-all route
 app.get('/api/apks', (req, res) => {
   const apksDir = path.join(__dirname, 'public', 'apks');
   
@@ -38,12 +39,14 @@ app.get('/api/apks', (req, res) => {
 
     res.json(apps);
   } catch (error) {
+    console.error('Error listing APKs:', error);
     res.status(500).json({ error: 'Erro ao listar APKs' });
   }
 });
 
 app.use('/apks', express.static(path.join(__dirname, 'public', 'apks')));
 
+// Catch-all route for SPA - must be last
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
